@@ -134,7 +134,7 @@ module.exports = {
   // initialize: initialize,
   fn: fn,
   settings: {
-    gitlabapi: { type: 'string',defaultValue:"http://www.lejuhub.com/api/v4/" },
+    gitlabapi: { type: 'string',defaultValue:"https://www.lejuhub.com/api/v4/" },
     gitlabapitoken: { type: 'string' },
   }
 }
