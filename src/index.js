@@ -48,24 +48,24 @@ var last_display_ids = [];
 var querying_term = null;
 
 function FilterTerm(list,filters,display,actions,display_id){
-    if(filters.length > 0){
-        var filter = filters[0];
-        FilterTerm(_.filter(list,(o)=>{return _.includes(o[0],filter);}),_.slice(filters,1),display,actions,display_id);
-    }
-    else{
-        var lastshow_timestamp = new Date();
-        var temp_id = "";
-        _.map(list,(value)=>{
-            temp_id = lastshow_timestamp + value[1];
-            last_display_ids[last_display_ids.length] = temp_id;
-            display({
-                id:temp_id,
-                icon,
-                title:`${value[1]}`,
-                onSelect:()=>{ return actions.open(value[1]);}
-            });
-        });
-    }
+  if(filters.length > 0){
+    var filter = filters[0];
+    FilterTerm(_.filter(list,(o)=>{return _.includes(o[0],filter);}),_.slice(filters,1),display,actions,display_id);
+  }
+  else{
+    var update_display_timestamp = new Date();
+    var temp_id = "";
+    _.map(_.slice(list,0,10) ,(value)=>{
+      temp_id = update_display_timestamp + value[1];
+      last_display_ids[last_display_ids.length] = temp_id;
+      display({
+        id:temp_id,
+        icon,
+        title:`${value[1]}`,
+        onSelect:()=>{ return actions.open(value[1]);}
+      });
+    });
+  }
 }
 
 const initialize = () => {
@@ -109,6 +109,7 @@ const fn = (scope) => {
         log.debug("trigger gitlab fetch project state is: ",fetch_project_state," caced_weburl_lenght:",cached_weburl.length);
         querying_term = splited_term;
         lastshow_timestamp = new Date();
+
         last_display_ids[last_display_ids.length] = lastshow_timestamp;
         if(fetch_project_state === "Fail" || (cached_weburl.length === 0 && fetch_project_state === "STOP")){
           display({
@@ -132,7 +133,7 @@ const fn = (scope) => {
 
 module.exports = {
   // initialize: initialize,
-  fn: fn,
+  fn: _.throttle(fn,600,{trailing:true}) ,
   settings: {
     gitlabapi: { type: 'string',defaultValue:"https://www.lejuhub.com/api/v4/" },
     gitlabapitoken: { type: 'string' },
