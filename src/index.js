@@ -47,12 +47,35 @@ var lastshow_timestamp = null;
 var last_display_ids = [];
 var querying_term = null;
 
+function permutator(inputArr) {
+  var results = [];
+
+  function permute(arr, memo) {
+    var cur, memo = memo || [];
+
+    for (var i = 0; i < arr.length; i++) {
+      cur = arr.splice(i, 1);
+      if (arr.length === 0) {
+        results.push(memo.concat(cur));
+      }
+      permute(arr.slice(), memo.concat(cur));
+      arr.splice(i, 0, cur[0]);
+    }
+
+    return results;
+  }
+  return permute(inputArr);
+}
+
 function FilterTerm(list,filters,display,actions,display_id){
-  let re = new RegExp(".*"+_.concat(filters.join(".*"))+".*");
+  // let re = new RegExp(".*"+_.concat(filters.join(".*"))+".*");
   var update_display_timestamp = new Date();
   var temp_id = "";
+  var permutator_filters = permutator(filters);
   list = _.filter(list,(value)=>{
-    return value[0].match(re);
+    return (_.filter(permutator_filters,(filter)=>{
+      return value[0].match(new RegExp(".*"+_.concat(filter.join(".*"))+".*"));
+    })).length > 0;
   });
   _.map(_.slice(list,0,10) ,(value)=>{
     temp_id = update_display_timestamp + value[1];
