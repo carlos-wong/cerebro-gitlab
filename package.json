@@ -5,7 +5,7 @@
     "axios": "^0.18.0",
     "cerebro-tools": "^0.1.8",
     "cerebro-ui": "^0.0.16",
-    "lodash": "^4.17.13",
+    "lodash": "^4.17.21",
     "loglevel": "^1.6.1",
     "mime": "^2.4.0"
   },
